@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>顶刊文献侦察工具</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="control-pane" aria-label="种子论文控制区">
+      <div class="brand-row">
+        <div class="mark" aria-hidden="true">
+          <span></span><span></span><span></span>
+        </div>
+        <div>
+          <h1>顶刊文献侦察</h1>
+          <p>母案例检索实验室</p>
+        </div>
+      </div>
+
+      <label class="field-label" for="seedInput">种子论文 / 研究想法</label>
+      <textarea id="seedInput" spellcheck="false">全球数据中心点源行星边界足迹与治理</textarea>
+
+      <div class="field-grid">
+        <label>
+          <span>质量门槛</span>
+          <select id="qualityGate">
+            <option value="top">核心文献 + 方法经典</option>
+            <option value="hybrid">顶刊 + 方法经典</option>
+            <option value="wide">广泛探索</option>
+          </select>
+        </label>
+        <label>
+          <span>侦察模式</span>
+          <select id="scoutMode">
+            <option value="professor">教授视角</option>
+            <option value="phd">博士入门</option>
+            <option value="idea">选题生成</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="slider-block">
+        <div class="slider-top">
+          <label for="precisionRange">精准度</label>
+          <output id="precisionValue" for="precisionRange">86</output>
+        </div>
+        <input id="precisionRange" type="range" min="40" max="100" value="86">
+      </div>
+
+      <fieldset class="chip-set">
+        <legend>检索分支</legend>
+        <label><input type="checkbox" checked value="problem"> 问题</label>
+        <label><input type="checkbox" checked value="method"> 方法</label>
+        <label><input type="checkbox" checked value="data"> 数据</label>
+        <label><input type="checkbox" checked value="decision"> 决策</label>
+        <label><input type="checkbox" checked value="cross"> 能力迁移</label>
+      </fieldset>
+
+      <div class="action-row">
+        <button id="generateBtn" class="primary-btn" type="button" title="生成文献侦察结果">
+          <span class="btn-icon">↻</span>
+          <span>生成</span>
+        </button>
+        <button id="exportBtn" class="icon-btn" type="button" title="导出矩阵 CSV" aria-label="导出矩阵 CSV">↓</button>
+      </div>
+
+      <div class="status-panel" aria-live="polite">
+        <strong id="statusTitle">就绪</strong>
+        <span id="statusText">母案例已载入。</span>
+      </div>
+    </aside>
+
+    <main class="workspace">
+      <header class="topbar">
+        <div>
+          <h2 id="caseTitle">全球数据中心点源行星边界足迹与治理</h2>
+          <p id="caseMeta">NC 氢气母案例 · 数据中心 Scope 1+2 · 1990-2024 历史 / 2025-2060 未来 / 点源治理</p>
+        </div>
+        <div class="metric-strip" aria-label="侦察统计">
+          <div><strong id="metricPapers">17</strong><span>篇文献</span></div>
+          <div><strong id="metricClusters">5</strong><span>组主题</span></div>
+          <div><strong id="metricIdeas">6</strong><span>个 idea</span></div>
+        </div>
+      </header>
+
+      <nav class="tabs" aria-label="工作台视图">
+        <button class="tab active" type="button" data-tab="case">母案例</button>
+        <button class="tab" type="button" data-tab="branches">检索分支</button>
+        <button class="tab" type="button" data-tab="landscape">文献地图</button>
+        <button class="tab" type="button" data-tab="innovation">创新点核验</button>
+        <button class="tab" type="button" data-tab="ideas">选题工作台</button>
+        <button class="tab" type="button" data-tab="matrix">综述矩阵</button>
+      </nav>
+
+      <section id="case" class="tab-panel active" aria-label="母案例">
+        <div class="panel-grid two-col">
+          <section class="work-panel">
+            <div class="panel-title-row">
+              <h3>研究设计链条</h3>
+              <span class="tag">母案例复原</span>
+            </div>
+            <div id="designChain" class="design-chain"></div>
+          </section>
+          <section class="work-panel">
+            <div class="panel-title-row">
+              <h3>信号雷达</h3>
+              <span class="tag">精准度雷达</span>
+            </div>
+            <canvas id="signalCanvas" width="560" height="340" aria-label="检索分支信号雷达"></canvas>
+            <div id="precisionBrief" class="precision-brief"></div>
+          </section>
+        </div>
+        <section class="work-panel">
+          <div class="panel-title-row">
+            <h3>这篇种子论文教会工具什么</h3>
+            <span class="tag">可迁移研究设计</span>
+          </div>
+          <div id="seedLessons" class="lesson-grid"></div>
+        </section>
+      </section>
+
+      <section id="branches" class="tab-panel" aria-label="检索分支">
+        <section class="work-panel">
+          <div class="panel-title-row">
+            <h3>检索问题拆解</h3>
+            <span class="tag">不是标题关键词搜索</span>
+          </div>
+          <div id="branchList" class="branch-list"></div>
+        </section>
+      </section>
+
+      <section id="landscape" class="tab-panel" aria-label="文献地图">
+        <section class="work-panel">
+          <div class="panel-title-row wrap">
+            <div>
+              <h3>文献地图</h3>
+              <span class="tag">核心 · 方法 · 相邻 · 类比 · 局限</span>
+            </div>
+            <label class="compact-search">
+              <span>筛选</span>
+              <input id="paperFilter" type="search" placeholder="期刊、方法、作者、关键词">
+            </label>
+          </div>
+          <div id="modeBrief" class="mode-brief"></div>
+          <div id="clusterList" class="cluster-list"></div>
+        </section>
+      </section>
+
+      <section id="innovation" class="tab-panel" aria-label="创新点核验">
+        <section class="work-panel">
+          <div class="panel-title-row wrap">
+            <div>
+              <h3>创新点文献核验</h3>
+              <span class="tag">先发现领域，再核验创新</span>
+            </div>
+          </div>
+          <div class="idea-quality-note">
+            <strong>通用规则</strong>
+            <span>这个板块不是预设答案。陌生领域先由母案例和文献地图生成候选创新点，再逐项核验：已有谁做过、哪里重复、组内点源或 IO/MRIO 能补哪一块。</span>
+          </div>
+          <div id="innovationGrid" class="innovation-grid"></div>
+        </section>
+      </section>
+
+      <section id="ideas" class="tab-panel" aria-label="选题工作台">
+        <section class="work-panel">
+          <div class="panel-title-row">
+            <h3>母文献 × 组内能力 / 跨学科启发工作台</h3>
+            <div class="panel-actions">
+              <span class="tag">组内主线优先 · 跨学科补缺口</span>
+              <div class="scroll-buttons" aria-label="idea 卡片横向滚动">
+                <button id="ideaPrevBtn" class="mini-icon-btn" type="button" title="向左滑动" aria-label="向左滑动">‹</button>
+                <button id="ideaNextBtn" class="mini-icon-btn" type="button" title="向右滑动" aria-label="向右滑动">›</button>
+              </div>
+            </div>
+          </div>
+          <div class="idea-source-tabs" aria-label="idea 来源筛选">
+            <button class="idea-source active" type="button" data-idea-source="all">全部</button>
+            <button class="idea-source" type="button" data-idea-source="group">组内能力主线</button>
+            <button class="idea-source" type="button" data-idea-source="cross">跨学科启发池</button>
+          </div>
+          <div class="idea-quality-note">
+            <strong>内部预审原则</strong>
+            <span>组内能力主线必须能被组内专家追问数据、模型和实施路径；跨学科启发池只负责打开思路，必须二次筛选后才能进入正式选题。</span>
+          </div>
+          <div id="capabilityStrip" class="capability-strip"></div>
+          <div id="ideaGrid" class="idea-grid"></div>
+        </section>
+        <section class="work-panel">
+          <div class="panel-title-row">
+            <h3>文献搜索审计</h3>
+            <span class="tag">避免漏顶刊 · 核心池 + 候选池</span>
+          </div>
+          <div id="searchAuditGrid" class="search-audit-grid"></div>
+        </section>
+        <section class="work-panel">
+          <div class="panel-title-row">
+            <h3>教授视角审稿防守清单</h3>
+            <span class="tag">踩雷点 → 防守证据</span>
+          </div>
+          <div id="reviewerGrid" class="reviewer-grid"></div>
+        </section>
+        <section class="work-panel">
+          <div class="panel-title-row">
+            <h3>顶尖课题组 Go / No-Go 门槛</h3>
+            <span class="tag">强推 · 可试 · 暂缓 · 淘汰</span>
+          </div>
+          <div id="labStandardGrid" class="lab-standard-grid"></div>
+        </section>
+      </section>
+
+      <section id="matrix" class="tab-panel" aria-label="综述矩阵">
+        <section class="work-panel">
+          <div class="panel-title-row wrap">
+            <div>
+              <h3>Zotero 风格综述矩阵</h3>
+              <span class="tag">先矩阵，后综述</span>
+            </div>
+            <button id="copyMatrixBtn" class="secondary-btn" type="button">复制 JSON</button>
+          </div>
+          <div class="table-wrap">
+            <table id="matrixTable">
+              <thead>
+                <tr>
+                  <th>文献</th>
+                  <th>角色</th>
+                  <th>方法</th>
+                  <th>数据</th>
+                  <th>贡献</th>
+                  <th>对我们选题的用途</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <template id="nodeTemplate">
+    <article class="design-node">
+      <span class="node-kicker"></span>
+      <h4></h4>
+      <p></p>
+    </article>
+  </template>
+
+  <script src="./app.js"></script>
+</body>
+</html>
